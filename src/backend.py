@@ -21,7 +21,7 @@ from .lib.codegen import generate_random_code
 from .lib.exceptions import InvalidCredentialError
 from .auth.code_errors import parse_code_error, get_code_status
 from .lib.thorium_binary import find_thorium_binary, register_thorium_browser
-from .lib.platform_utils import build_chromium_args
+from .lib.platform_utils import build_chromium_args, find_system_chromium
 from .auth.captcha import captcha_detection
 from .lib.types import (
     BinaryPath,
@@ -50,10 +50,18 @@ logger.level(name="SENSITIVE", no=15, color="<m><b>")
 def _resolve_and_register_binary_location(browser: Browser) -> BinaryPath | None:
     """
     Returns the binary path for browsers not natively recognized by SeleniumBase, or None if not needed.
+    On ARM, always returns the system Chromium to avoid SeleniumBase downloading an x86 binary.
     """
     if browser is Browser.Thorium:
         register_thorium_browser()
         return find_thorium_binary()
+
+    # On ARM (Raspberry Pi), SeleniumBase's auto-downloaded Chromium is x86
+    # and will fail with "Exec format error". Use the system ARM binary instead.
+    system_chromium = find_system_chromium()
+    if system_chromium is not None:
+        return BinaryPath(system_chromium)
+
     return None
 
 
