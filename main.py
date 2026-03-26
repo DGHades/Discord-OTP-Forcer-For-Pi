@@ -149,5 +149,6 @@ if __name__ == "__main__":
 
     finally:
         if session:
-            input("Press Enter to close the browser...")
+            if sys.stdin.isatty():
+                input("Press Enter to close the browser...")
             session.driver.quit()

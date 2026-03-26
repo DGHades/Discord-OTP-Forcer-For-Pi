@@ -25,9 +25,25 @@ See this repo's Github wiki or the `docs` folder for this section. https://githu
 Here's a video tutorial: https://www.youtube.com/watch?v=v4skgYVmvQg
 
 # Dependencies
-- Google Chrome
-- Python >= 3.13
+- Google Chrome (or Chromium on Linux ARM / Raspberry Pi)
+- Python >= 3.11
 - All the libraries in `dependencies.txt` and also in `pyproject.toml`
+
+# Raspberry Pi Support
+This project fully supports Raspberry Pi (3B+, 4, 5) running Raspberry Pi OS (Bookworm, 64-bit recommended).
+
+**Quick setup:**
+```bash
+chmod +x scripts/RaspberryPi/setup.sh
+./scripts/RaspberryPi/setup.sh
+```
+
+See the full guide: [docs/Raspberry-Pi-Setup.md](docs/Raspberry-Pi-Setup.md)
+
+Key differences on Pi:
+- Uses **Chromium** (ARM-native) instead of Google Chrome
+- ARM-optimized Chromium flags are applied automatically for low-memory environments
+- Shell scripts are provided in `scripts/RaspberryPi/` and `scripts/Linux/`
 
 # Why did I make this?
 In December 2021, I lost access to my passwords and OTP list due to a file syncing issue. I was able to recover most of the credentials, except for my Discord Alt. When I contacted Discord Support, they informed me that due to their security policy, they could not disable 2FA for that account, which while it is understandable, is unfortunate. As a proof-of-concept program, I hacked together this crude script which simply brute forces randomly generated 6 digit numbers to the Discord login's TOTP field.

@@ -21,6 +21,7 @@ from .lib.codegen import generate_random_code
 from .lib.exceptions import InvalidCredentialError
 from .auth.code_errors import parse_code_error, get_code_status
 from .lib.thorium_binary import find_thorium_binary, register_thorium_browser
+from .lib.platform_utils import build_chromium_args
 from .auth.captcha import captcha_detection
 from .lib.types import (
     BinaryPath,
@@ -65,6 +66,8 @@ def bootstrap_browser(config: Config) -> BrowserSession:
         case Browser.Chrome | Browser.Brave | Browser.Chromium | Browser.Thorium:
             _HARDEN_WEB_STORAGE_JS = (Path(__file__).parent / "lib/js_scripts" / "HardenWebStorage.js").read_text(encoding="utf-8")
 
+            chromium_args = build_chromium_args(config.program.headless)
+
             driver = Driver(
                 browser="chrome" if config.program.browser in (Browser.Chromium, Browser.Thorium) else config.program.browser,
                 uc=True,
@@ -72,7 +75,7 @@ def bootstrap_browser(config: Config) -> BrowserSession:
                 use_chromium=config.program.browser is Browser.Chromium,
                 headless=config.program.headless,
                 locale_code="en-US",
-                chromium_arg="--log-level=1" if config.program.headless else None,
+                chromium_arg=chromium_args if chromium_args else None,
             )
 
             driver.implicitly_wait(0)
