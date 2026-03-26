@@ -53,11 +53,9 @@ def build_chromium_args(headless: bool) -> str | None:
     current platform.  Returns None when no extra flags are needed.
 
     On ARM (Raspberry Pi) the following optimizations are applied:
+      --no-sandbox              Required on Linux when Chromium's sandbox can't initialize
       --disable-dev-shm-usage   Use /tmp instead of /dev/shm (often too small on Pi)
       --disable-gpu             Avoids GPU-related issues on Pi's VideoCore
-      --no-zygote               Reduces memory by disabling the zygote process
-      --single-process          Runs Chromium in a single process to save RAM
-      --disable-software-rasterizer  Avoids CPU-heavy software rendering
     """
     args: list[str] = []
 
@@ -67,11 +65,12 @@ def build_chromium_args(headless: bool) -> str | None:
     if is_arm():
         logger.debug("ARM architecture detected — applying low-resource Chromium flags")
         args.extend([
+            "--no-sandbox",
             "--disable-dev-shm-usage",
             "--disable-gpu",
-            "--no-zygote",
-            "--single-process",
-            "--disable-software-rasterizer",
+            "--test-type",
+            "--disable-extensions",
+            "--disable-background-networking",
         ])
 
     return ",".join(args) if args else None
