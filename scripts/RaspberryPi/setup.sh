@@ -28,20 +28,26 @@ echo ""
 # --- 1. System packages ---
 echo "[1/5] Installing system packages..."
 sudo apt-get update
+
+# Detect Chromium package names — Trixie uses "chromium" + "chromium-driver",
+# while Bookworm uses "chromium-browser" + "chromium-chromedriver".
+CHROMIUM_PKG="chromium-browser"
+CHROMEDRIVER_PKG="chromium-chromedriver"
+if apt-cache show chromium &>/dev/null && ! apt-cache show chromium-browser &>/dev/null; then
+    CHROMIUM_PKG="chromium"
+    CHROMEDRIVER_PKG="chromium-driver"
+fi
+
 sudo apt-get install -y \
     python3 \
     python3-pip \
     python3-venv \
-    chromium-browser \
-    chromium-chromedriver \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
+    "$CHROMIUM_PKG" \
+    "$CHROMEDRIVER_PKG" \
     libxkbcommon0 \
     libgbm1 \
     libpango-1.0-0 \
     libcairo2 \
-    libasound2 \
     libnspr4 \
     libnss3 \
     xdg-utils

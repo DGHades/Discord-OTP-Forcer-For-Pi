@@ -47,12 +47,22 @@ That's it! The setup script handles everything: system packages, Python venv, an
 
 ```bash
 sudo apt-get update
+
+# On Bookworm:
 sudo apt-get install -y \
     python3 python3-pip python3-venv \
     chromium-browser chromium-chromedriver \
     libatk1.0-0 libatk-bridge2.0-0 libcups2 \
     libxkbcommon0 libgbm1 libpango-1.0-0 libcairo2 \
     libasound2 libnspr4 libnss3 xdg-utils
+
+# On Trixie (Debian 13 / testing) — package names differ:
+sudo apt-get install -y \
+    python3 python3-pip python3-venv \
+    chromium chromium-driver \
+    libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 \
+    libxkbcommon0 libgbm1 libpango-1.0-0 libcairo2 \
+    libasound2t64 libnspr4 libnss3 xdg-utils
 ```
 
 **Why these packages?**
@@ -170,12 +180,15 @@ sudo raspi-config   # Enable VNC under Interface Options
 
 ### "chromedriver not found" or version mismatch
 ```bash
-# Ensure the system chromedriver is installed
+# On Bookworm:
 sudo apt-get install -y chromium-chromedriver
+# On Trixie:
+sudo apt-get install -y chromium-driver
 
 # Verify
 chromedriver --version
-chromium-browser --version
+chromium --version      # Trixie
+chromium-browser --version  # Bookworm
 ```
 
 ### SeleniumBase downloads the wrong chromedriver
